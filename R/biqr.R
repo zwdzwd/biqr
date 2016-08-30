@@ -13,6 +13,7 @@
 #' @examples
 #' \dontrun{
 #' library(biqr)
+#' setwd('~/tools/biqr')
 #' seq.fns <- paste0('1134071/', list.files('1134071', pattern=".seq"))
 #' seq.fns.3F1R <- seq.fns[grepl("3F1R", seq.fns)]
 #' seq.fns.2F2R <- seq.fns[grepl("2F2R", seq.fns)]
@@ -27,7 +28,6 @@
 #' @details
 #'
 "_PACKAGE"
-## setwd('~/tools/biqr/')
 
 #' Get reference sequence
 #'
@@ -58,14 +58,14 @@ localaln1 <- function(seq.fn, refseq) {
   
   ## setup substitution matrix
   mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = -3)
+  GAmat <- mat
+  CTmat <- mat
+  GAmat['G','A'] <- 1
+  CTmat['T','C'] <- 1
   for (a in c('A','T','C','G')) {
     GAmat[a, 'N'] <- 0
     CTmat[a, 'N'] <- 0
   }
-  GAmat <- mat
-  GAmat['G','A'] <- 1
-  CTmat <- mat
-  CTmat['T','C'] <- 1
   
   ## read target sequence
   targetseq <- readDNAStringSet(seq.fn)
@@ -82,8 +82,8 @@ localaln1 <- function(seq.fn, refseq) {
   maxaln <- c(aln.pw, aln.pc, aln.dw, aln.dc)[strand.index][[1]]
   if (strand.index == 1 || strand.index == 3) strand = '+';
   if (strand.index == 2 || strand.index == 4) strand = '-';
-  cat(strand.index, "\t");
-  cat(maxaln@score, "\n")
+  ## cat(strand.index, "\t");
+  ## cat(maxaln@score, "\n")
   
   list(alncol=strsplit(as.character(aligned(maxaln)),"")[[1]],
        score=maxaln@score,
@@ -110,7 +110,8 @@ localaln <- function(seq.fns, chrm, beg, end, min.score=100) {
   seq.alned <- seq.alned[sapply(seq.alned, function(x) x$score >min.score)]
   
   ## merge to base matrix
-  basemat <- rbind(as.character(as.vector(refseq)), do.call(rbind, lapply(seq.alned, function(x) x$alncol)))
+  basemat <- rbind(strsplit(as.character(refseq),"")[[1]],
+                   do.call(rbind, lapply(seq.alned, function(x) x$alncol)))
   
   ## trim basemat off the plasmid from two sides
   plrange <- which(apply(basemat, 2, function(x) sum(x=="-") / dim(basemat)[1]) < 0.7)

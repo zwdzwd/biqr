@@ -16,6 +16,7 @@ This package implements visualization of NOMeSeq data
 \examples{
 \dontrun{
 library(biqr)
+setwd('~/tools/biqr')
 seq.fns <- paste0('1134071/', list.files('1134071', pattern=".seq"))
 seq.fns.3F1R <- seq.fns[grepl("3F1R", seq.fns)]
 seq.fns.2F2R <- seq.fns[grepl("2F2R", seq.fns)]
