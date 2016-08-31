@@ -1,0 +1,116 @@
+---
+title: "Making bubble plot"
+author: "Wanding Zhou"
+date: "August 30, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_knit$set(fig.width=8, fig.height=6)
+opts_chunk$set(cache=TRUE)
+
+suppressPackageStartupMessages(library(XML))
+suppressPackageStartupMessages(library(Biostrings))
+suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(devtools))
+```
+
+
+```{r}
+setwd('~/tools/biqr/')
+
+## library(biqr)
+source('~/tools/biqr/biqr/R/biqr.R')
+
+seq.fns <- paste0('1134071/', list.files('1134071', pattern=".seq"))
+seq.fns.2F2R <- seq.fns[grepl("2F2R", seq.fns)]
+seq.fns.2F2R
+
+## extract sample names
+snames.2F2R <- sub('.*/(.*)2F2R.*_(.*).seq', "\\1.\\2", seq.fns.2F2R)
+snames.2F2R
+
+## do the alignment
+ca.2F2R <- clone.aln(seq.fns.2F2R, "chr8", 11664775, 11667135, snames = snames.2F2R)
+```
+
+```{r, fig.width=15, fig.height=10}
+
+## the $m slot is the base matrix
+ca.2F2R$m[1:4,1:10]
+
+## now plot the cytosines in HCG context, clones are sorted by number of cytosine retension
+plotcytosine(ca.2F2R, 'hcg')
+
+## equivalent to using the base matrix of cytosines
+m.hcg <- order.cytosine(ca.2F2R, "hcg", subset.c = T)
+plotcytosine(m.hcg, 'hcg')
+
+## one can do some matrix splicing to get rid of certain column (here the first and last column)
+m.hcg.2 <- m.hcg[,-c(1,ncol(m.hcg))]
+plotcytosine(m.hcg.2, 'hcg')
+
+## or get rid of certain clone
+m.hcg.3 <- m.hcg.2[-grep('Aza', rownames(m.hcg.2)),]
+plotcytosine(m.hcg.3, 'hcg')
+
+## to show the sample name and confirm they are indeed deleted
+## before
+plotcytosine(m.hcg.2, 'hcg', show.sname = T, mar.left=0.1)
+## after
+plotcytosine(m.hcg.3, 'hcg', show.sname = T, mar.left=0.1)
+
+## to show GCH
+m.gch <- order.cytosine(ca.2F2R, 'gch', subset.c = T)
+plotcytosine(m.gch, 'gch', show.sname = T, mar.left=0.1)
+
+## matching the order of GCH with HCG
+m.gch.2 <- m.gch[rownames(m.hcg.3),]
+plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1)
+
+## column names are the cytosine coordinates from the original basematrix
+## we can use that to have both GCH and HCG focus on the same region
+gch.locs <- as.numeric(colnames(m.gch.2))
+plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1, radius=5)
+plotcytosine(m.hcg.3, 'hcg', add=T, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=2)
+
+## combined with Wheatmap, one can juxtapose the two plots in many ways
+load_all('~/tools/wheatmap/wheatmap/')
+grid.newpage()
+WGrob(plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1, radius=5, draw = F)) +
+  WGrob(plotcytosine(m.hcg.3, 'hcg', show.sname=T, mar.left=0.1, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=5, draw = F), Beneath())
+
+WGrob(plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.15, radius=5, draw = F)) +
+  WGrob(plotcytosine(m.hcg.3, 'hcg', show.sname=T, mar.left=0.1, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=5, draw = F), RightOf(pad=0.05))
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+seq.fns.3F1R <- seq.fns[grepl("3F1R", seq.fns)]
+
+## to match 
+ca <- clone.aln(seq.fns.3F1R, "chr8", 11664775, 11667135)
+plotcytosine(ca, 'hcg')
+
+## to show sample names
+plotcytosine(ca, 'hcg', show.sname = TRUE, margin = c(0.1,0.1,0.1,0.1))
+
+## to show 
+plotcytosine(order.cytosine(ca, context="hcg"), show.sname = TRUE, mar.left=0.3)
+
+plotcytosine(aln$basemat[1:20,], 'gch')
+
+aln <- localaln(seq.fns, "chr8", 11664775, 11667135)
+plotcytosine(aln$basemat[1:20,], 'hcg')
+
+res <- subset.cytosine(basemat, context)
+plotcytosine(res$basemat, res$locs)
+
+
+
+
+seq.fns.3F1R
+
+```
