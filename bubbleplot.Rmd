@@ -23,6 +23,7 @@ suppressPackageStartupMessages(library(devtools))
 ```{r}
 setwd('~/tools/biqr/')
 
+
 ## library(biqr)
 source('~/tools/biqr/biqr/R/biqr.R')
 
@@ -75,8 +76,9 @@ plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1)
 ## column names are the cytosine coordinates from the original basematrix
 ## we can use that to have both GCH and HCG focus on the same region
 gch.locs <- as.numeric(colnames(m.gch.2))
-plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1, radius=5)
-plotcytosine(m.hcg.3, 'hcg', add=T, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=2)
+a <- plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.1, radius=5, draw=F)
+b <- plotcytosine(m.hcg.3, 'hcg', add=T, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=2, draw=F)
+grid.draw(gList(a,b))
 
 ## combined with Wheatmap, one can juxtapose the two plots in many ways
 load_all('~/tools/wheatmap/wheatmap/')
@@ -91,7 +93,7 @@ WGrob(plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.15, radius=5, draw
 # show alignment
 
 ```{r}
-format.m(ca.2F2R$m[1:10,1:100])
+formatmat(ca.2F2R$m[1:10,1:100])
 ```
 
 ```{r eval=FALSE, include=FALSE}
