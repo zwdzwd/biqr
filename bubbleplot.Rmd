@@ -2,7 +2,9 @@
 title: "Making bubble plot"
 author: "Wanding Zhou"
 date: "August 30, 2016"
-output: html_document
+output: 
+  html_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +18,7 @@ suppressPackageStartupMessages(library(grid))
 suppressPackageStartupMessages(library(devtools))
 ```
 
+# Make bubble plots
 
 ```{r}
 setwd('~/tools/biqr/')
@@ -85,7 +88,11 @@ WGrob(plotcytosine(m.gch.2, 'gch', show.sname = T, mar.left=0.15, radius=5, draw
   WGrob(plotcytosine(m.hcg.3, 'hcg', show.sname=T, mar.left=0.1, loc.beg=min(gch.locs), loc.end=max(gch.locs), radius=5, draw = F), RightOf(pad=0.05))
 ```
 
+# show alignment
 
+```{r}
+format.m(ca.2F2R$m[1:10,1:100])
+```
 
 ```{r eval=FALSE, include=FALSE}
 seq.fns.3F1R <- seq.fns[grepl("3F1R", seq.fns)]
