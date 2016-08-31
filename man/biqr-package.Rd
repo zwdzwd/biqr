@@ -24,7 +24,7 @@ seq.fns.2F2R
 seq.fns.3F1R
 
 aln <- localaln(seq.fns.2F2R, "chr8", 11664775, 11667135)
-aln <- localaln(seq.fns.3F1R, chr8, 11664775, 11667135)
+aln <- localaln(seq.fns.3F1R, "chr8", 11664775, 11667135)
 plotcytosine(aln$basemat[1:20,], 'hcg')
 plotcytosine(aln$basemat[1:20,], 'gch')
 }

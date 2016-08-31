@@ -4,19 +4,41 @@
 \alias{plotcytosine}
 \title{Plot cytosine}
 \usage{
-plotcytosine(basemat, target, margin = c(0.05, 0.05, 0.1, 0.05),
-  bar.top = 0.05, alpha = 0.9)
+plotcytosine(m, context = "hcg", add = FALSE, draw = TRUE,
+  mar.bottom = 0.05, mar.left = 0.05, mar.top = 0.1, mar.right = 0.05,
+  bar.top = 0.05, alpha = 0.9, radius = 3, loc.beg = NULL,
+  loc.end = NULL, text.sname.pad = 0.02, show.sname = FALSE)
 }
 \arguments{
-\item{basemat}{base matrix of the alignment}
+\item{m}{CloneAlignment object or base matrix of cytosine alignment}
 
-\item{target}{either "hcg", "gch" or "cg"}
+\item{context}{either "hcg", "gch" or "cg"}
 
-\item{margin}{a vector of margins c(bottom, left, top, right)}
+\item{add}{superimpose plot without names}
+
+\item{draw}{whether to draw grobs}
+
+\item{mar.bottom}{bottom margin}
+
+\item{mar.left}{left margin}
+
+\item{mar.top}{top margin}
+
+\item{mar.right}{right margin}
 
 \item{bar.top}{height of top bar}
 
 \item{alpha}{transparency}
+
+\item{radius}{plot radius}
+
+\item{loc.beg}{start of plotting range (default to left-most cytosine)}
+
+\item{loc.end}{end of plotting range (default to right-most cytosine)}
+
+\item{text.sname.pad}{padding to sample name plot}
+
+\item{show.sname}{whether to show sample names}
 }
 \description{
 Plot cytosine
